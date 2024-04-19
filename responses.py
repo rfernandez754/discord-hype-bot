@@ -1,4 +1,4 @@
-
+""" Module providing functionality for getting the response from the bot. """
 
 def get_response(user_input: str) -> str:
     """ Decides a response to a given user input """
@@ -6,13 +6,13 @@ def get_response(user_input: str) -> str:
 
     if lowered == '':
         return "Did not receive a message!"
-    elif 'hey' in lowered:
+    if 'hey' in lowered:
         return 'Hey !'
-    elif 'hi' in lowered:
+    if 'hi' in lowered:
         return 'hiiiiii'
-    elif 'hello' in lowered:
+    if 'hello' in lowered:
         return 'Hello!!!!'
-    elif 'bye' in lowered:
+    if 'bye' in lowered:
         return 'see ya'
-    else:
-        return 'I did not understand your message, sorry...'
+
+    return 'I did not understand your message, sorry...'

@@ -1,7 +1,9 @@
+""" Main module for Discord bot """
+
 from typing import Final
 import os
 from dotenv import load_dotenv
-from discord import Intents, Client, Message
+from discord import Intents, Client
 from responses import get_response
 
 load_dotenv()
@@ -18,11 +20,8 @@ async def send_message(message, user_message) -> None:
         print("Empty message.")
         return
 
-    try:
-        response = get_response(user_message)
-        await message.channel.send(response)
-    except Exception as e:
-        print(e)
+    response = get_response(user_message)
+    await message.channel.send(response)
 
 @client.event
 async def on_ready() -> None:
