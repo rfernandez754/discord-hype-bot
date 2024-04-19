@@ -1,2 +1,4 @@
 # Ignore .env which contains sensitive information
 .env
+
+__pycache__
