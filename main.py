@@ -3,25 +3,22 @@
 from typing import Final
 import os
 from dotenv import load_dotenv
-from discord import Intents, Client
+from discord import Intents
+from discord.ext import commands
 from responses import get_response
+
+from dbcontroller import DBController
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
 intents = Intents.default()
 intents.message_content = True
-client = Client(intents=intents)
+#client = Client(intents=intents)
 
-async def send_message(message, user_message) -> None:
-    """ Sends a message to the discord channel """
+client = commands.Bot(command_prefix='!', intents=intents)
 
-    if not user_message:
-        print("Empty message.")
-        return
-
-    response = get_response(user_message)
-    await message.channel.send(response)
+dbcontroller = DBController()
 
 @client.event
 async def on_ready() -> None:
@@ -29,20 +26,15 @@ async def on_ready() -> None:
 
     print(f'{client.user} has started.')
 
-
-@client.event
-async def on_message(message) -> None:
-    """ Handles the incoming message from discord users """
-
-    if message.author == client.user:
-        return
-
-    username = str(message.author)
-    user_message = message.content
-    channel = str(message.channel)
-
-    print(f'[{channel}] {username}: "{user_message}"')
-    await send_message(message, user_message)
+@client.command()
+async def add(ctx, *, arg):
+    """ Function replys to user """
+    await ctx.send(f"Hey there, I got your command to add: {arg}")
+    await ctx.send(f"What day of the week would you like to add the reminder for {arg}?")
+    print(ctx.author.name)
+    print(ctx.message.content)
+    print(ctx.message.created_at)
+    dbcontroller.add_message_info(ctx.author.name,ctx.message.content,ctx.message.created_at)
 
 def main() -> None:
     """ main method """
