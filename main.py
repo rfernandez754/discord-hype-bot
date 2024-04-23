@@ -1,46 +1,39 @@
 """ Main module for Discord bot """
 
-from typing import Final
 import os
+from typing import Final
 from dotenv import load_dotenv
 from discord import Intents
 from discord.ext import commands
-from responses import get_response
-
+# from responses import get_response
 from dbcontroller import DBController
 
-load_dotenv()
-TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
+class DiscordBot(commands.Bot):
+    """ Class for handling Dicord Bot startup and execution """
+    def __init__(self):
+        intents = Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix='!', intents=intents)
+        self.db_controller = DBController()
+        self.load_cogs()
 
-intents = Intents.default()
-intents.message_content = True
-#client = Client(intents=intents)
+    async def on_ready(self) -> None:
+        """ Bot startup """
+        print(f'{self.user} has started.')
 
-client = commands.Bot(command_prefix='!', intents=intents)
-
-dbcontroller = DBController()
-
-@client.event
-async def on_ready() -> None:
-    """ Bot startup """
-
-    print(f'{client.user} has started.')
-
-@client.command()
-async def add(ctx, *, arg):
-    """ Function replys to user """
-    await ctx.send(f"Hey there, I got your command to add: {arg}")
-    await ctx.send(f"What day of the week would you like to add the reminder for {arg}?")
-    print(ctx.author.name)
-    print(ctx.message.content)
-    print(ctx.message.created_at)
-    dbcontroller.add_message_info(ctx.author.name,ctx.message.content,ctx.message.created_at)
+    def load_cogs(self):
+        """ Load cogs into the bot. Current working directory must be within the main Discord Reminder Bot Folder. """
+        for filename in os.listdir("./cogs"):
+            if filename.endswith(".py") and filename != "__init__.py":
+                self.load_extension(f'cogs.{filename[:-3]}')
+                print(f'cogs.{filename[:-3]}')
 
 def main() -> None:
     """ main method """
-
-    client.run(TOKEN)
-
+    load_dotenv()
+    token: Final[str] = os.getenv('DISCORD_TOKEN')
+    bot = DiscordBot()
+    bot.run(token)
 
 if __name__ == '__main__':
     main()
