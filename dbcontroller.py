@@ -21,6 +21,12 @@ class DBController:
         except mysql.connector.Error as err:
             logging.error("Error connecting to database: %s", err)
 
+    def __del__(self):
+        """ Destructor to ensure database connection is closed when object is destroyed """
+        if hasattr(self, 'db') and self.db.is_connected():
+            self.db.close()
+            logging.info("Closed database connection.")       
+
     def store_message_info(self, author, content, timestamp):
         """ Adds a users message info to the db """
         try:
