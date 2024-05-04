@@ -7,7 +7,6 @@ class GeneralCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.command()
     async def help2(self, ctx):
         """ Prints HELP """
@@ -21,10 +20,10 @@ class GeneralCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-    # this may need the proper intents
+        """ For when a new member joins """
+        # this may need the proper intents
         await member.send('Welcome to the server!')
 
 async def setup(bot):
     """ Setups this Cog with the Discord Bot """
-    print("Inside of setup function......")
     await bot.add_cog(GeneralCog(bot))

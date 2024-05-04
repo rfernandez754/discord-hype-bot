@@ -18,7 +18,6 @@ class LoggingCog(commands.Cog):
 
 async def setup(bot):
     """ Setups this Cog with the Discord Bot """
-    print("Inside of setup function......")
     await bot.add_cog(LoggingCog(bot))
 
 

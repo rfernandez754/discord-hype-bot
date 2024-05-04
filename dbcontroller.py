@@ -41,19 +41,15 @@ class DBController:
 
     def store_message_info(self, author, content, timestamp):
         """ Adds a users message info to the db """
-        try:
-            with self.db.cursor() as cursor:
-                cursor.execute(f"USE {DATABASE_NAME}")
-                query = "INSERT INTO messages (author, content, sent_time) VALUES (%s, %s, %s)"
-                value = (author, content, timestamp)
-                cursor.execute(query, value)
-                self.db.commit()
-                logging.info("%s record(s) inserted.", cursor.rowcount)
-        except mysql.connector.Error as err:
-            logging.error("Error adding message info to database: %s", err)
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "INSERT INTO messages (author, content, sent_time) VALUES (%s, %s, %s)"
+        value = (author, content, timestamp)
+        self.execute_query(query, value)
+        self.db.commit()
 
     def check_user_exists(self, user_id: str):
         """ Checks if the user exists in the database """
+        self.execute_query(f"USE {DATABASE_NAME}")
         query = "SELECT user_id FROM users WHERE user_id = %s"
         result = self.execute_query(query, (user_id,), fetchone=True)
         if result:
@@ -65,7 +61,8 @@ class DBController:
     def add_user(self, user_id: str):
         """ Adds to the users current balance """
         if not self.check_user_exists(user_id):
-            query = "INSERT INTO (users) VALUES (%s)"
+            self.execute_query(f"USE {DATABASE_NAME}")
+            query = "INSERT INTO users (user_id) VALUES (%s)"
             self.execute_query(query, (user_id,))
             logging.info("User %s added to datbase successfully.", user_id)
         else:
@@ -74,8 +71,9 @@ class DBController:
     def add_gold(self, user_id: str, amount: int):
         """ Adds to the users current balance """
         current_balance = self.get_user_balance(user_id)
-        if current_balance:
-            new_balance = new_balance + amount
+        if current_balance is not None:
+            new_balance = current_balance + amount
+            self.execute_query(f"USE {DATABASE_NAME}")
             query = "UPDATE users SET balance = %s WHERE user_id = %s"
             self.execute_query(query, (new_balance, user_id))
             logging.info("Gold added successfully.")
@@ -84,6 +82,7 @@ class DBController:
 
     def get_user_balance(self, user_id: str):
         """ Gets the users current balance """
+        self.execute_query(f"USE {DATABASE_NAME}")
         query = "SELECT balance FROM users WHERE user_id = %s"
         result = self.execute_query(query, (user_id,), fetchone=True)
         if result:
