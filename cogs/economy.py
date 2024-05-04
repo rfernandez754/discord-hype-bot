@@ -18,6 +18,9 @@ class EconomyCog(commands.Cog):
             else:
                 await ctx.send("This command is on cooldown, "
                               f"you can use it in {round(cooldown,2)}s")
+        else:
+            print(error)
+
 
     @commands.command()
     async def register(self, ctx):
@@ -46,15 +49,27 @@ class EconomyCog(commands.Cog):
     @commands.command(name='gold', help='Adds gold to your account')
     @commands.cooldown(1,10,commands.BucketType.user)
     async def gold(self, ctx):
-        """ Check the user's current balance """
+        """ Adds gold to the user's balance """
         amount = 50
         user_id = str(ctx.author.id)
-        self.bot.db_controller.add_gold(user_id, amount)
-        if not self.bot.db_controller.check_user_exists(user_id):
-            await ctx.send("You are not registered. "
-                          f"Use {self.bot.command_prefix}register to register.")
-        else:
+        if self.check_if_registered(ctx, user_id):
+            self.bot.db_controller.add_gold(user_id, amount)
             await ctx.send(f"You gained {amount} gold!")
+
+    @commands.command(name='mystery', help='Does something mysterious')
+    @commands.cooldown(1,60,commands.BucketType.user)
+    async def mystery(self, ctx):
+        """ Does something mysterious from a list of possibilities """
+        pass
+
+    def check_if_registered(self, ctx, user_id):
+        """ Will tell the user to register if not registered """
+        if not self.bot.db_controller.check_user_exists(user_id):
+            ctx.send("You are not registered. "
+                          f"Use {self.bot.command_prefix}register to register.")
+            return False
+        return True
+
 
 async def setup(bot):
     """ Setups this Cog with the Discord Bot """

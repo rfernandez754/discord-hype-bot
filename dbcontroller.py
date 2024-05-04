@@ -1,3 +1,4 @@
+""" Module handles the communications with the MySQL Database. """
 import os
 import logging
 import mysql.connector

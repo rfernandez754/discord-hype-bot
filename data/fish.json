@@ -1,7 +1,44 @@
 {
-    "boot": {
-        "rarity": 0.02
-    }
-
-
-}
+    "fish": [
+      {
+        "name": "Salmon",
+        "rarity": "Common",
+        "catch_chance": 0.6,
+        "gold": 5,
+        "size_range": {
+          "min_length": 10,
+          "max_length": 30
+        }
+      },
+      {
+        "name": "Trout",
+        "rarity": "Uncommon",
+        "catch_chance": 0.3,
+        "gold": 20,
+        "size_range": {
+          "min_length": 5,
+          "max_length": 25
+        }
+      },
+      {
+        "name": "Bass",
+        "rarity": "Rare",
+        "catch_chance": 0.1,
+        "gold": 50,
+        "size_range": {
+          "min_length": 15,
+          "max_length": 40
+        }
+      },
+      {
+        "name": "Boots",
+        "rarity": "Joke",
+        "catch_chance": 0.1,
+        "gold": 1,
+        "size_range": {
+          "min_length": 20,
+          "max_length": 50
+        }
+      }
+    ]
+  }
