@@ -13,9 +13,11 @@ class EconomyCog(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             cooldown = error.retry_after
             if cooldown >= 60:
-                await ctx.send(f'This command is on cooldown, you can use it in {round(cooldown/60)}m')
+                await ctx.send("This command is on cooldown, "
+                              f"you can use it in {round(cooldown/60)}m")
             else:
-                await ctx.send(f'This command is on cooldown, you can use it in {round(cooldown,2)}s')
+                await ctx.send("This command is on cooldown, "
+                              f"you can use it in {round(cooldown,2)}s")
 
     @commands.command()
     async def register(self, ctx):
@@ -38,7 +40,8 @@ class EconomyCog(commands.Cog):
         if balance is not None:
             await ctx.send(f"Your balance is {balance} gold.")
         else:
-            await ctx.send("You don't have a balance.")
+            await ctx.send("You are not registered. "
+                          f"Use {self.bot.command_prefix}register to register.")
 
     @commands.command(name='gold', help='Adds gold to your account')
     @commands.cooldown(1,10,commands.BucketType.user)
@@ -47,7 +50,11 @@ class EconomyCog(commands.Cog):
         amount = 50
         user_id = str(ctx.author.id)
         self.bot.db_controller.add_gold(user_id, amount)
-        await ctx.send(f"You gained {amount} gold!")
+        if not self.bot.db_controller.check_user_exists(user_id):
+            await ctx.send("You are not registered. "
+                          f"Use {self.bot.command_prefix}register to register.")
+        else:
+            await ctx.send(f"You gained {amount} gold!")
 
 async def setup(bot):
     """ Setups this Cog with the Discord Bot """
