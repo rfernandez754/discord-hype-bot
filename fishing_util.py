@@ -27,9 +27,12 @@ class FishingUtil:
             weights=[fish['catch_chance'] for fish in self.fish_data['fish']],
             k=1
         )[0]
-        size = random.randint(chosen_fish['size_range']['min_length'], chosen_fish['size_range']['max_length'])
+        size = random.randint(chosen_fish['size_range']['min_length'],
+                              chosen_fish['size_range']['max_length'])
         selling_price = self.calculate_selling_price(chosen_fish, size)
-        return [f"You caught a {chosen_fish['name']} of size {size} cm! It sells for {selling_price} gold. This is a {chosen_fish['rarity']} fish!", selling_price]
+        return [f"You caught a {chosen_fish['name']} of size {size} cm! "
+                f"It sells for {selling_price} gold. "
+                f"This is a {chosen_fish['rarity']} fish!", selling_price]
 
     def calculate_selling_price(self, fish, size):
         """ Calculates the fishes selling price given the fish and the size. """
