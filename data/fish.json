@@ -1,33 +1,53 @@
 {
     "fish": [
       {
-        "name": "Salmon",
+        "name": "Atlantic Salmon",
         "rarity": "Common",
         "catch_chance": 0.6,
         "gold": 5,
         "size_range": {
-          "min_length": 10,
-          "max_length": 30
+          "min_length": 70,
+          "max_length": 150
         }
       },
       {
-        "name": "Trout",
-        "rarity": "Uncommon",
-        "catch_chance": 0.3,
-        "gold": 20,
+        "name": "Rainbow Trout",
+        "rarity": "Common",
+        "catch_chance": 0.5,
+        "gold": 10,
         "size_range": {
-          "min_length": 5,
-          "max_length": 25
+          "min_length": 25,
+          "max_length": 70
         }
       },
       {
-        "name": "Bass",
-        "rarity": "Rare",
-        "catch_chance": 0.1,
+        "name": "Largemouth Bass",
+        "rarity": "Uncommon",
+        "catch_chance": 0.25,
         "gold": 50,
         "size_range": {
-          "min_length": 15,
-          "max_length": 40
+          "min_length": 30,
+          "max_length": 70
+        }
+      },
+      {
+        "name": "Northern Pike",
+        "rarity": "Uncommon",
+        "catch_chance": 0.2,
+        "gold": 80,
+        "size_range": {
+          "min_length": 50,
+          "max_length": 150
+        }
+      },
+      {
+        "name": "Yellowfin Tuna",
+        "rarity": "Uncommon",
+        "catch_chance": 0.2,
+        "gold": 50,
+        "size_range": {
+          "min_length": 100,
+          "max_length": 200
         }
       },
       {
@@ -38,6 +58,76 @@
         "size_range": {
           "min_length": 20,
           "max_length": 50
+        }
+      },
+      {
+        "name": "Anglerfish",
+        "rarity": "Very Rare",
+        "catch_chance": 0.05,
+        "gold": 350,
+        "size_range": {
+          "min_length": 50,
+          "max_length": 110
+        }
+      },
+      {
+        "name": "Hammerhead Shark",
+        "rarity": "Legendary",
+        "catch_chance": 0.01,
+        "gold": 2000,
+        "size_range": {
+          "min_length": 360,
+          "max_length": 550
+        }
+      },
+      {
+        "name": "Marlin",
+        "rarity": "Legendary",
+        "catch_chance": 0.01,
+        "gold": 1800,
+        "size_range": {
+          "min_length": 200,
+          "max_length": 500
+        }
+      },
+      {
+        "name": "Megaladon",
+        "rarity": "Mythic",
+        "catch_chance": 0.0005,
+        "gold": 30000,
+        "size_range": {
+          "min_length": 900,
+          "max_length": 1100
+        }
+      },
+      {
+        "name": "Giant Squid",
+        "rarity": "Mythic",
+        "catch_chance": 0.001,
+        "gold": 25000,
+        "size_range": {
+          "min_length": 300,
+          "max_length": 800
+        }
+      },
+      {
+        "name": "Leviathan",
+        "rarity": "Mythic",
+        "catch_chance": 0.0001,
+        "gold": 70000,
+        "size_range": {
+          "min_length": 600,
+          "max_length": 1200
+        }
+      },
+      {
+        "name": "Neptune",
+        "rarity": "God",
+        "catch_chance": 0.00001,
+        "gold": 1800000,
+        "size_range": {
+          "min_length": 2000,
+          "max_length": 3000
         }
       }
     ]
