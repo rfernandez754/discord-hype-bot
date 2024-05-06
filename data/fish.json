@@ -51,13 +51,33 @@
         }
       },
       {
-        "name": "Boots",
+        "name": "Boot",
         "rarity": "Joke",
         "catch_chance": 0.1,
         "gold": 1,
         "size_range": {
           "min_length": 20,
-          "max_length": 50
+          "max_length": 40
+        }
+      },
+      {
+        "name": "Slim Jim",
+        "rarity": "Joke",
+        "catch_chance": 0.05,
+        "gold": 2,
+        "size_range": {
+          "min_length": 12,
+          "max_length": 24
+        }
+      },
+      {
+        "name": "Shovel of Gravedigging",
+        "rarity": "Joke",
+        "catch_chance": 0.001,
+        "gold": 300,
+        "size_range": {
+          "min_length": 120,
+          "max_length": 240
         }
       },
       {

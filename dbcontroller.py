@@ -77,6 +77,7 @@ class DBController:
             self.execute_query(f"USE {DATABASE_NAME}")
             query = "UPDATE users SET balance = %s WHERE user_id = %s"
             self.execute_query(query, (new_balance, user_id))
+            self.db.commit()
             logging.info("Gold added successfully.")
         else:
             logging.error("Could not get current balance.")
@@ -89,3 +90,31 @@ class DBController:
         if result:
             return result[0]
         return None
+
+    def check_if_new_biggest_fish(self, fish_species: str, fish_size: float, user_id: str) -> bool:
+        """ Updates the fish leaderboard is a user catches a new biggest fish. Returns true if so. """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "SELECT max_size_cm FROM biggest_fish WHERE fish_species = %s AND user_id = %s"
+        result = self.execute_query(query, (fish_species, user_id), fetchone=True)
+        if result and fish_size > float(result[0]):
+            # Update the fish with the new biggest
+            query = "UPDATE biggest_fish SET max_size_cm = %s, user_id = %s WHERE fish_species = %s"
+            self.execute_query(query, (fish_size, user_id, fish_species))
+            self.db.commit()
+            return True
+        if result:
+            # Did not catch the new biggest fish
+            return False
+        # First person to catch the fish
+        query = "INSERT INTO biggest_fish (fish_species, max_size_cm, user_id) VALUES (%s, %s, %s)"
+        value = (fish_species, fish_size, user_id)
+        self.execute_query(query, value)
+        self.db.commit()
+        return True
+
+    def get_fish_leaderboard(self) -> str:
+        """ Returns the result of querying the biggest_fish table in the database. """        
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "SELECT fish_species, max_size_cm, user_id FROM biggest_fish"
+        result = self.execute_query(query)
+        return result
