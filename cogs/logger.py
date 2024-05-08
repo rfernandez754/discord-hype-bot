@@ -1,7 +1,7 @@
 """ Module contains a Cog for handling logging """
 from discord.ext import commands
 
-class LoggingCog(commands.Cog):
+class Logging(commands.Cog):
     """ The cog handles general user commands. """
 
     def __init__(self, bot):
@@ -18,14 +18,4 @@ class LoggingCog(commands.Cog):
 
 async def setup(bot):
     """ Setups this Cog with the Discord Bot """
-    await bot.add_cog(LoggingCog(bot))
-
-
-
-
-
-
-
-
-
-
+    await bot.add_cog(Logging(bot))

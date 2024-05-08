@@ -72,27 +72,47 @@ class DBController:
     def add_gold(self, user_id: str, amount: int):
         """ Adds to the users current balance """
         current_balance = self.get_user_balance(user_id)
-        if current_balance is not None:
-            new_balance = current_balance + amount
-            self.execute_query(f"USE {DATABASE_NAME}")
-            query = "UPDATE users SET balance = %s WHERE user_id = %s"
-            self.execute_query(query, (new_balance, user_id))
-            self.db.commit()
-            logging.info("Gold added successfully.")
-        else:
-            logging.error("Could not get current balance.")
+        new_balance = current_balance + amount
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "UPDATE users SET balance = %s WHERE user_id = %s"
+        self.execute_query(query, (new_balance, user_id))
+        self.db.commit()
+        logging.info("Gold added successfully.")
+
+    def subtract_gold(self, user_id: str, amount: int):
+        """ Remove from the users current balance """
+        current_balance = self.get_user_balance(user_id)
+        new_balance = max(0, current_balance - amount)
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "UPDATE users SET balance = %s WHERE user_id = %s"
+        self.execute_query(query, (new_balance, user_id))
+        self.db.commit()
+        logging.info("Gold removed successfully.")
 
     def get_user_balance(self, user_id: str):
-        """ Gets the users current balance """
+        """ Gets the users current balance. If user not in database """
         self.execute_query(f"USE {DATABASE_NAME}")
         query = "SELECT balance FROM users WHERE user_id = %s"
         result = self.execute_query(query, (user_id,), fetchone=True)
         if result:
             return result[0]
-        return None
+        # User not in db so lets add them and return a starting balance of 0
+        self.add_user(user_id)
+        return 0
 
-    def check_if_new_biggest_fish(self, fish_species: str, fish_size: float, user_id: str) -> bool:
-        """ Updates the fish leaderboard is a user catches a new biggest fish. Returns true if so. """
+    def check_if_new_biggest_fish(self, fish_species: str, fish_rarity: int, fish_size: float, user_id: str) -> bool:
+        """
+        Updates the fish leaderboard if the fish is a new biggest fish.
+
+        args:
+            fish_species (str): The species of the fish
+            fish_rarity (int): An mapped int assigned to the given rarity
+            fish_size (float): Size of the fish
+            user_id (str): Discord id of the user that caught the fish
+
+        Returns:
+            bool: True if new biggest fish, else False
+        """
         self.execute_query(f"USE {DATABASE_NAME}")
         query = "SELECT max_size_cm FROM biggest_fish WHERE fish_species = %s AND user_id = %s"
         result = self.execute_query(query, (fish_species, user_id), fetchone=True)
@@ -106,8 +126,9 @@ class DBController:
             # Did not catch the new biggest fish
             return False
         # First person to catch the fish
-        query = "INSERT INTO biggest_fish (fish_species, max_size_cm, user_id) VALUES (%s, %s, %s)"
-        value = (fish_species, fish_size, user_id)
+        query = "INSERT INTO biggest_fish (fish_species, fish_rarity, max_size_cm, user_id) " \
+                "VALUES (%s, %s, %s, %s)"
+        value = (fish_species, fish_rarity, fish_size, user_id)
         self.execute_query(query, value)
         self.db.commit()
         return True
@@ -115,6 +136,6 @@ class DBController:
     def get_fish_leaderboard(self) -> str:
         """ Returns the result of querying the biggest_fish table in the database. """        
         self.execute_query(f"USE {DATABASE_NAME}")
-        query = "SELECT fish_species, max_size_cm, user_id FROM biggest_fish"
+        query = "SELECT fish_species, max_size_cm, user_id FROM biggest_fish ORDER BY fish_rarity"
         result = self.execute_query(query)
         return result

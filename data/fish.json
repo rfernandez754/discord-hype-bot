@@ -1,13 +1,53 @@
 {
     "fish": [
       {
+        "name": "Boot",
+        "rarity": "Joke",
+        "catch_chance": 0.1,
+        "gold": 1,
+        "size_range": {
+          "min_length": 20,
+          "max_length": 40
+        }
+      },
+      {
+        "name": "Slim Jim",
+        "rarity": "Joke",
+        "catch_chance": 0.05,
+        "gold": 2,
+        "size_range": {
+          "min_length": 12,
+          "max_length": 24
+        }
+      },
+      {
+        "name": "Rubber Duck",
+        "rarity": "Joke",
+        "catch_chance": 0.07,
+        "gold": 3,
+        "size_range": {
+          "min_length": 5,
+          "max_length": 15
+        }
+      },
+      {
+        "name": "Shovel of Gravedigging",
+        "rarity": "Joke",
+        "catch_chance": 0.001,
+        "gold": 300,
+        "size_range": {
+          "min_length": 120,
+          "max_length": 240
+        }
+      },
+      {
         "name": "Atlantic Salmon",
         "rarity": "Common",
         "catch_chance": 0.6,
         "gold": 5,
         "size_range": {
-          "min_length": 70,
-          "max_length": 150
+          "min_length": 50,
+          "max_length": 120
         }
       },
       {
@@ -16,8 +56,18 @@
         "catch_chance": 0.5,
         "gold": 10,
         "size_range": {
-          "min_length": 25,
-          "max_length": 70
+          "min_length": 20,
+          "max_length": 40
+        }
+      },
+      {
+        "name": "Bluegill",
+        "rarity": "Common",
+        "catch_chance": 0.4,
+        "gold": 8,
+        "size_range": {
+          "min_length": 10,
+          "max_length": 25
         }
       },
       {
@@ -41,49 +91,49 @@
         }
       },
       {
-        "name": "Yellowfin Tuna",
+        "name": "Red Snapper",
         "rarity": "Uncommon",
-        "catch_chance": 0.2,
-        "gold": 50,
+        "catch_chance": 0.15,
+        "gold": 40,
+        "size_range": {
+          "min_length": 30,
+          "max_length": 70
+        }
+      },
+      {
+        "name": "Yellowfin Tuna",
+        "rarity": "Rare",
+        "catch_chance": 0.1,
+        "gold": 150,
         "size_range": {
           "min_length": 100,
           "max_length": 200
         }
       },
       {
-        "name": "Boot",
-        "rarity": "Joke",
-        "catch_chance": 0.1,
-        "gold": 1,
+        "name": "Mahi Mahi",
+        "rarity": "Rare",
+        "catch_chance": 0.08,
+        "gold": 120,
         "size_range": {
-          "min_length": 20,
-          "max_length": 40
+          "min_length": 70,
+          "max_length": 120
         }
       },
       {
-        "name": "Slim Jim",
-        "rarity": "Joke",
+        "name": "Swordfish",
+        "rarity": "Rare",
         "catch_chance": 0.05,
-        "gold": 2,
+        "gold": 180,
         "size_range": {
-          "min_length": 12,
-          "max_length": 24
-        }
-      },
-      {
-        "name": "Shovel of Gravedigging",
-        "rarity": "Joke",
-        "catch_chance": 0.001,
-        "gold": 300,
-        "size_range": {
-          "min_length": 120,
-          "max_length": 240
+          "min_length": 150,
+          "max_length": 300
         }
       },
       {
         "name": "Anglerfish",
         "rarity": "Very Rare",
-        "catch_chance": 0.05,
+        "catch_chance": 0.02,
         "gold": 350,
         "size_range": {
           "min_length": 50,
@@ -91,9 +141,19 @@
         }
       },
       {
+        "name": "Wahoo",
+        "rarity": "Very Rare",
+        "catch_chance": 0.03,
+        "gold": 300,
+        "size_range": {
+          "min_length": 100,
+          "max_length": 180
+        }
+      },
+      {
         "name": "Hammerhead Shark",
         "rarity": "Legendary",
-        "catch_chance": 0.01,
+        "catch_chance": 0.005,
         "gold": 2000,
         "size_range": {
           "min_length": 360,
@@ -103,7 +163,7 @@
       {
         "name": "Marlin",
         "rarity": "Legendary",
-        "catch_chance": 0.01,
+        "catch_chance": 0.006,
         "gold": 1800,
         "size_range": {
           "min_length": 200,
@@ -142,7 +202,7 @@
       },
       {
         "name": "Neptune",
-        "rarity": "God",
+        "rarity": "Godly",
         "catch_chance": 0.00001,
         "gold": 1800000,
         "size_range": {

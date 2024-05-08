@@ -3,7 +3,11 @@ import logging
 from discord.ext import commands
 from fishing_util import FishingUtil
 
-class FishingCog(commands.Cog):
+# Used for ordering in Fishing Leaderboards
+RARITY_MAP = { "Common" : 0, "Uncommon" : 1, "Rare" : 2, "Very Rare" : 3,
+               "Legendary" : 4, "Mythic" : 5, "Godly" : 6}
+
+class Fishing(commands.Cog):
     """ This cog handles fishing commands. """
 
     def __init__(self, bot):
@@ -15,14 +19,13 @@ class FishingCog(commands.Cog):
     async def fish(self, ctx):
         """ Attempt to catch a fish to sell for gold! """
         user_id = str(ctx.author.id)
-        economy_cog = self.bot.get_cog('EconomyCog')
-        if economy_cog.check_if_registered(ctx, user_id):
-            result_message, result_earnings, result_species, result_size, result_rarity = self.fishing.catch_fish()
-            logging.info("Fish caught by %s", user_id)
-            self.bot.db_controller.add_gold(user_id, result_earnings)
-            if result_rarity != "Joke" and self.bot.db_controller.check_if_new_biggest_fish(result_species, result_size, user_id):
-                result_message += " You have caught the biggest fish of this species! Type !biggest"
-            await ctx.send(result_message)
+        message, earnings, species, size, rarity = self.fishing.catch_fish()
+        logging.info("Fish caught by %s", user_id)
+        self.bot.db_controller.add_gold(user_id, earnings)
+        if rarity != "Joke" and \
+        self.bot.db_controller.check_if_new_biggest_fish(species, RARITY_MAP[rarity], size, user_id):
+            message += "```You have caught the biggest fish of this species! Type !biggest```"
+        await ctx.send(message)
 
     @commands.command(name='biggest', help='Shows the leaderboard of biggest fish caught')
     async def biggest(self, ctx):
@@ -51,4 +54,4 @@ class FishingCog(commands.Cog):
 
 async def setup(bot):
     """ Setups this Cog with the Discord Bot """
-    await bot.add_cog(FishingCog(bot))
+    await bot.add_cog(Fishing(bot))

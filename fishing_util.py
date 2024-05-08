@@ -4,10 +4,15 @@ import random
 import logging
 
 class FishingUtil:
-    """ Class handles the utilities for fishing """
-    def __init__(self):
+    """ 
+    Class handles the utilities for fishing.
+    A fishing and rod level can be passed to the object when instantiated.
+    The fishing and rod lvls can increase the weights of catching higher rarity fish.
+    """
+    def __init__(self, fishing_lvl=1, rod_lvl=1):
         self.fish_data = self.load_fish_data()
-        # TODO maybe add the fishing level here, and the other class will just instantiate the class with the param every time the user uses the command
+        self.fishing_lvl = fishing_lvl
+        self.rod_lvl = rod_lvl
 
     def load_fish_data(self):
         """ Loads json fish data """
@@ -15,7 +20,44 @@ class FishingUtil:
             logging.info("fish.json data loaded")
             return json.load(file)
 
-    def catch_fish(self) -> [str, int, str, float, str]: # TODO add a fishing rod level parameter that is passed in to effect caught fishes
+    def calculate_catch_weight(self, fish) -> float:
+        """
+        Calculate the adjusted catch weight of a fish based on fishing and rod levels.
+
+        Args:
+            fish (dict): Fish data dictionary
+
+        Returns:
+            float: Weight for the fish used in random.choices()
+        """
+        base_catch_chance = fish['catch_chance']
+        rarity = fish['rarity']
+
+        # Adjust catch chance based on fishing and rod levels. Level 1 means no bonus.
+        fishing_boost = 0.015 * (self.fishing_lvl - 1)
+        rod_boost = 0.025 * (self.rod_lvl - 1)
+
+        # Define scaling factors based on rarity
+        rarity_scale = {
+            'Joke' : 0,
+            'Common': 0.01,
+            'Uncommon': 0.012,
+            'Rare': 0.015,
+            'Very Rare': 0.017,
+            'Legendary': 0.019,
+            'Mythic': 0.021,
+            'Godly': 0.022
+        }
+
+        # Get the scaling factor based on rarity (default to 0 for unknown rarity)
+        scale_factor = rarity_scale.get(rarity, 0)
+
+        # Calculate adjusted catch chance with scaled boosts (linear component)
+        adjusted_catch_chance = base_catch_chance + scale_factor * (fishing_boost + rod_boost)
+
+        return adjusted_catch_chance
+
+    def catch_fish(self) -> [str, int, str, float, str]:
         """ 
         Simulate fishing
         
@@ -28,22 +70,27 @@ class FishingUtil:
         """
         chosen_fish = random.choices(
             self.fish_data['fish'],
-            weights=[fish['catch_chance'] for fish in self.fish_data['fish']],
+            weights=[self.calculate_catch_weight(fish) for fish in self.fish_data['fish']],
             k=1
         )[0]
         size = round(random.uniform(chosen_fish['size_range']['min_length'],
                               chosen_fish['size_range']['max_length']),2)
         base_gold, additional_gold = self.calculate_selling_price(chosen_fish, size)
         selling_price = base_gold + additional_gold
-        return [f"You caught a {chosen_fish['name']} of size {size} cm! "
+        return [f"```You caught a {chosen_fish['name']} of size {size} cm! "
                 f"It sells for {base_gold} gold. "
                 f"This is a {chosen_fish['rarity']} fish! "
                 f"You gain an additional {additional_gold} gold based on the size "
-                f"for a total of {selling_price} gold!", selling_price, chosen_fish['name'], size, chosen_fish['rarity']]
+                f"for a total of {selling_price} gold!```",
+                selling_price, chosen_fish['name'], size, chosen_fish['rarity']]
 
     def calculate_selling_price(self, fish, size) -> [int, float]:
         """ 
         Calculates the fishes selling price. 
+
+        args:
+            fish (dict): Fish data dictionary
+            size (int): Size of the caught fish
 
         Returns:
             int: base selling gold
