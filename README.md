@@ -13,8 +13,7 @@ Economy game for a discord server that has user accumulate gold.
     - [x] mystery - Mystery Command that does something random
 - [ ] Fishing Commands
     - [x] fish - catch a random fish
-    - [x] Check gold leadboards
-    - [x] Mystery Command that does something random
+    - [x] biggest - check leadboard of the biggest caught fish
     - [ ] fishlvl - get fishing level
     - [ ] rodlvl - get rods level and name of rod upgrade (i.e., lvl 1 - bronze rod, lvl 3 - gold rod, etc)
 - [ ] Fishing System
