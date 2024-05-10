@@ -5,6 +5,7 @@
         "rarity": "Joke",
         "catch_chance": 0.1,
         "gold": 1,
+        "xp": 1,
         "size_range": {
           "min_length": 20,
           "max_length": 40
@@ -15,6 +16,7 @@
         "rarity": "Joke",
         "catch_chance": 0.05,
         "gold": 2,
+        "xp": 1,
         "size_range": {
           "min_length": 12,
           "max_length": 24
@@ -25,6 +27,7 @@
         "rarity": "Joke",
         "catch_chance": 0.07,
         "gold": 3,
+        "xp": 1,
         "size_range": {
           "min_length": 5,
           "max_length": 15
@@ -35,6 +38,7 @@
         "rarity": "Joke",
         "catch_chance": 0.001,
         "gold": 300,
+        "xp": 100,
         "size_range": {
           "min_length": 120,
           "max_length": 240
@@ -45,6 +49,7 @@
         "rarity": "Common",
         "catch_chance": 0.6,
         "gold": 5,
+        "xp": 5,
         "size_range": {
           "min_length": 50,
           "max_length": 120
@@ -55,6 +60,7 @@
         "rarity": "Common",
         "catch_chance": 0.5,
         "gold": 10,
+        "xp": 6,
         "size_range": {
           "min_length": 20,
           "max_length": 40
@@ -65,6 +71,7 @@
         "rarity": "Common",
         "catch_chance": 0.4,
         "gold": 8,
+        "xp": 7,
         "size_range": {
           "min_length": 10,
           "max_length": 25
@@ -75,6 +82,7 @@
         "rarity": "Uncommon",
         "catch_chance": 0.25,
         "gold": 50,
+        "xp": 15,
         "size_range": {
           "min_length": 30,
           "max_length": 70
@@ -84,7 +92,8 @@
         "name": "Northern Pike",
         "rarity": "Uncommon",
         "catch_chance": 0.2,
-        "gold": 80,
+        "gold": 17,
+        "xp": 1,
         "size_range": {
           "min_length": 50,
           "max_length": 150
@@ -95,6 +104,7 @@
         "rarity": "Uncommon",
         "catch_chance": 0.15,
         "gold": 40,
+        "xp": 20,
         "size_range": {
           "min_length": 30,
           "max_length": 70
@@ -105,6 +115,7 @@
         "rarity": "Rare",
         "catch_chance": 0.1,
         "gold": 150,
+        "xp": 35,
         "size_range": {
           "min_length": 100,
           "max_length": 200
@@ -114,7 +125,8 @@
         "name": "Mahi Mahi",
         "rarity": "Rare",
         "catch_chance": 0.08,
-        "gold": 120,
+        "gold": 40,
+        "xp": 1,
         "size_range": {
           "min_length": 70,
           "max_length": 120
@@ -125,6 +137,7 @@
         "rarity": "Rare",
         "catch_chance": 0.05,
         "gold": 180,
+        "xp": 45,
         "size_range": {
           "min_length": 150,
           "max_length": 300
@@ -135,6 +148,7 @@
         "rarity": "Very Rare",
         "catch_chance": 0.02,
         "gold": 350,
+        "xp": 60,
         "size_range": {
           "min_length": 50,
           "max_length": 110
@@ -145,6 +159,7 @@
         "rarity": "Very Rare",
         "catch_chance": 0.03,
         "gold": 300,
+        "xp": 72,
         "size_range": {
           "min_length": 100,
           "max_length": 180
@@ -155,6 +170,7 @@
         "rarity": "Legendary",
         "catch_chance": 0.005,
         "gold": 2000,
+        "xp": 135,
         "size_range": {
           "min_length": 360,
           "max_length": 550
@@ -165,6 +181,7 @@
         "rarity": "Legendary",
         "catch_chance": 0.006,
         "gold": 1800,
+        "xp": 130,
         "size_range": {
           "min_length": 200,
           "max_length": 500
@@ -175,6 +192,7 @@
         "rarity": "Mythic",
         "catch_chance": 0.0005,
         "gold": 30000,
+        "xp": 475,
         "size_range": {
           "min_length": 900,
           "max_length": 1100
@@ -185,6 +203,7 @@
         "rarity": "Mythic",
         "catch_chance": 0.001,
         "gold": 25000,
+        "xp": 675,
         "size_range": {
           "min_length": 300,
           "max_length": 800
@@ -195,6 +214,7 @@
         "rarity": "Mythic",
         "catch_chance": 0.0001,
         "gold": 70000,
+        "xp": 1250,
         "size_range": {
           "min_length": 600,
           "max_length": 1200
@@ -205,6 +225,7 @@
         "rarity": "Godly",
         "catch_chance": 0.00001,
         "gold": 1800000,
+        "xp": 4095,
         "size_range": {
           "min_length": 2000,
           "max_length": 3000
