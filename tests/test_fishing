@@ -22,7 +22,7 @@ def test_rarity(fishing_level, rod_level):
     fishing = FishingUtil(fishing_level, rod_level)
     species_map = {}
 
-    # Simulate fishing 1000 times and record species names and rarities
+    # Simulate fishing RARITY_ATTEMPTS times and record species names and rarities
     for _ in range(RARITY_ATTEMPTS):
         _, _, species, _, rarity = fishing.catch_fish()
         if species in species_map:
@@ -42,7 +42,8 @@ def test_rarity(fishing_level, rod_level):
     sorted_species = sorted(species_map.items(), key=lambda x: RARITY_ORDER[x[1]['rarity']])
 
     # Print sorted species occurrence ratio by rarity
-    print(f"Species occurrence ratio after {RARITY_ATTEMPTS} fishing attempts (sorted by rarity) with Fishing Lvl {fishing_level} and Rod Lvl {rod_level}:")
+    print(f"Species occurrence ratio after {RARITY_ATTEMPTS} fishing attempts (sorted by rarity) "
+          f"with Fishing Lvl {fishing_level} and Rod Lvl {rod_level}:")
     for species, data in sorted_species:
         print(f"{species} ({data['rarity']}): {data['ratio']:.4%}")
 

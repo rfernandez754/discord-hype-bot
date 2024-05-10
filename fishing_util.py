@@ -104,12 +104,14 @@ class FishingUtil:
         relative_size = size - min_length
 
         if relative_size <= 0.5 * range_size:
-            # Linear interpolation from 1.0 to 2.0 for sizes up to the midpoint
-            additional_gold_multiplier = 1.0 + (relative_size / (0.5 * range_size)) * 1.0
+            # Additional gold scales lower below the 50th percentile
+            additional_gold_multiplier = 1.0 + (relative_size / (0.75 * range_size))
+        elif relative_size <= 0.9 * range_size:
+            additional_gold_multiplier = 1.0 + (relative_size / (0.5 * range_size))            
         else:
-            # Higher multiplier (e.g., up to 5 times) for sizes in the upper range (90th percentile)
+            # Higher multiplier for sizes above 90th percentile
             percentile = (relative_size - 0.5 * range_size) / (0.5 * range_size)
-            additional_gold_multiplier = 2.0 + 3.0 * percentile  # Scale multiplier up to 5.0
+            additional_gold_multiplier = 2.0 + 2.0 * percentile
 
         additional_gold = round((additional_gold_multiplier * base_gold) - (base_gold))
         return [base_gold, additional_gold]

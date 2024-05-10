@@ -12,19 +12,31 @@ class General(commands.Cog):
         """ Outputs a message to the user when they run a command on cooldown """
         if isinstance(error, commands.CommandOnCooldown):
             cooldown = error.retry_after
-            if cooldown >= 60:
-                await ctx.send("This command is on cooldown, "
-                              f"you can use it in {round(cooldown/60)}m")
-            else:
-                await ctx.send("This command is on cooldown, "
-                              f"you can use it in {round(cooldown,2)}s")
+            days, hours_remainder = divmod(cooldown, 86400)  # 86400 seconds in a day
+            hours, minutes_remainder = divmod(hours_remainder, 3600)  # 3600 seconds in an hour
+            minutes, seconds = divmod(minutes_remainder, 60)
+
+            cooldown_message_parts = []
+
+            if days >= 1:
+                cooldown_message_parts.append(f"{days}d")
+            if hours >= 1:
+                cooldown_message_parts.append(f"{hours}h")
+            if minutes >= 1:
+                cooldown_message_parts.append(f"{minutes}m")
+
+            seconds = round(seconds, 2)
+            cooldown_message_parts.append(f"{seconds}s")
+
+            cooldown_message = " ".join(cooldown_message_parts)
+            await ctx.send(f"This command is on cooldown, you can use it in {cooldown_message}")
         else:
             print(error)
 
     @commands.command()
     async def hello(self, ctx, *, arg):
         """ Test command to get bot response. Make sure to give args """
-        await ctx.send(f"Hey there, I got your command: {arg}")
+        await ctx.send(f"Hey there, I got your command with args: {arg}")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
