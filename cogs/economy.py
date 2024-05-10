@@ -26,7 +26,7 @@ class Economy(commands.Cog):
         await ctx.send(f"You gained {amount} gold!")
 
     @commands.command(name='mystery', help='Does something mysterious')
-    @commands.cooldown(1,1,commands.BucketType.user)
+    @commands.cooldown(1,86400,commands.BucketType.user)
     async def mystery(self, ctx):
         """ Does something mysterious from a list of possibilities """
         choice = random.randint(1,100)
