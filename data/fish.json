@@ -92,8 +92,8 @@
         "name": "Northern Pike",
         "rarity": "Uncommon",
         "catch_chance": 0.2,
-        "gold": 17,
-        "xp": 1,
+        "gold": 45,
+        "xp": 17,
         "size_range": {
           "min_length": 50,
           "max_length": 150
@@ -125,8 +125,8 @@
         "name": "Mahi Mahi",
         "rarity": "Rare",
         "catch_chance": 0.08,
-        "gold": 40,
-        "xp": 1,
+        "gold": 190,
+        "xp": 40,
         "size_range": {
           "min_length": 70,
           "max_length": 120

@@ -15,7 +15,7 @@ class Fishing(commands.Cog):
         self.fishing = FishingUtil()
 
     @commands.command(name='fish', help='Attempt to catch and sell a fish')
-    @commands.cooldown(1,1,commands.BucketType.user)
+    @commands.cooldown(3,3600,commands.BucketType.user)
     async def fish(self, ctx):
         """ Attempt to catch a fish to sell for gold! """
         user_id = str(ctx.author.id)

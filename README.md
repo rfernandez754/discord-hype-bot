@@ -19,7 +19,8 @@ Economy game for a discord server that has user accumulate gold.
 - [ ] Fishing System
     - [ ] Add fishing levels and xp gain from fish
     - [ ] Add shop with fishing rod upgrade
-
+- [ ] Lottery commands to risk some money for a lot of money. Should be worth it to use in long run. Maybe an hourly, daily, and weekly.
+    - [ ] Add a dice roller for this to be more interactive
 ## RemindMe
 
 A reminder system that allows users to set reminders within a discord server.
@@ -32,4 +33,7 @@ A reminder system that allows users to set reminders within a discord server.
 - [ ] Improve logging.
 - [ ] Finish help command.
 
+## Future updates
+
+Job update that adds jobs where users can level up in them to get more money or items.
 

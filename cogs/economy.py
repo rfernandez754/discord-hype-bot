@@ -20,7 +20,7 @@ class Economy(commands.Cog):
     @commands.cooldown(1,86400,commands.BucketType.user)
     async def daily(self, ctx):
         """ Adds gold to the user's balance """
-        amount = 50
+        amount = 100
         user_id = str(ctx.author.id)
         self.bot.db_controller.add_gold(user_id, amount)
         await ctx.send(f"You gained {amount} gold!")

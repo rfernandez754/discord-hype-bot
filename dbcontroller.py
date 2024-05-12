@@ -43,7 +43,7 @@ class DBController:
     def store_message_info(self, author, content, timestamp) -> None:
         """ Adds a users message info to the db """
         self.execute_query(f"USE {DATABASE_NAME}")
-        query = "INSERT INTO messages (author, content, sent_time) VALUES (%s, %s, %s)"
+        query = "INSERT INTO messages (user_id, content, sent_time) VALUES (%s, %s, %s)"
         value = (author, content, timestamp)
         self.execute_query(query, value)
         self.db.commit()
@@ -59,12 +59,35 @@ class DBController:
         logging.info("Could not find user %s in database.", user_id)
         return False
 
+    def check_levels_exists(self, user_id: str) -> bool:
+        """ Checks if the user levels exists in the database """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "SELECT user_id FROM levels WHERE user_id = %s"
+        result = self.execute_query(query, (user_id,), fetchone=True)
+        if result:
+            logging.info("Successfully found user levels %s in database.", user_id)
+            return True
+        logging.info("Could not find user levels %s in database.", user_id)
+        return False
+
     def add_user(self, user_id: str) -> None:
-        """ Adds to the users current balance """
+        """ Adds the user to the db """
         if not self.check_user_exists(user_id):
             self.execute_query(f"USE {DATABASE_NAME}")
             query = "INSERT INTO users (user_id) VALUES (%s)"
             self.execute_query(query, (user_id,))
+            self.db.commit()
+            logging.info("User %s added to datbase successfully.", user_id)
+        else:
+            logging.error("User %s already exists in the database.", user_id)
+
+    def add_user_levels(self, user_id: str) -> None:
+        """ Adds the user levels to the db """
+        if not self.check_levels_exists(user_id):
+            self.execute_query(f"USE {DATABASE_NAME}")
+            query = "INSERT INTO levels (user_id) VALUES (%s)"
+            self.execute_query(query, (user_id,))
+            self.db.commit()
             logging.info("User %s added to datbase successfully.", user_id)
         else:
             logging.error("User %s already exists in the database.", user_id)
@@ -130,7 +153,7 @@ class DBController:
         return amount
 
     def get_user_balance(self, user_id: str) -> int:
-        """ Gets the users current balance. If user not in database """
+        """ Gets the users current balance. If user not in database, adds them. """
         self.execute_query(f"USE {DATABASE_NAME}")
         query = "SELECT balance FROM users WHERE user_id = %s"
         result = self.execute_query(query, (user_id,), fetchone=True)
@@ -189,3 +212,89 @@ class DBController:
         result = self.execute_query(query)
         logging.info("Fish leaderboard fetched.")
         return result
+
+    def get_level(self, user_id: str, skill_name: str) -> int:
+        """
+        Gets the users current level for a skill. If levels not in database, it adds them.
+
+        args:
+            user_id (str): Discord id of the user
+            skill_name (str): Name of the skill
+
+        Returns:
+            int: level of the skill
+        """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "SELECT %s_level FROM levels WHERE user_id = %s"
+        result = self.execute_query(query, (skill_name, user_id), fetchone=True)
+        if result:
+            return result[0]
+        # User levels not in db so lets add them and return a starting level of 1
+        self.add_user_levels(user_id)
+        return 1
+
+    def get_xp(self, user_id: str, skill_name: str) -> int:
+        """
+        Gets the users current xp for a skill. If levels not in database, it adds them.
+
+        args:
+            user_id (str): Discord id of the user
+            skill_name (str): Name of the skill
+
+        Returns:
+            int: xp of the skill
+        """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "SELECT %s_xp FROM levels WHERE user_id = %s"
+        result = self.execute_query(query, (skill_name, user_id), fetchone=True)
+        if result:
+            return result[0]
+        # User levels not in db so lets add them and return a starting xp of 0
+        self.add_user_levels(user_id)
+        return 0
+
+    def add_xp(self, xp_to_add: int, user_id: str, skill_name: str) -> bool:
+        """
+        Adds xp to a skill. If xp surpasses next_level_xp, level up.
+
+        args:
+            user_id (str): Discord id of the user
+            skill_name (str): Name of the skill
+
+        Returns:
+            bool: returns True if user leveled up after adding xp, False if not.
+        """
+        current_xp = self.get_xp(user_id, skill_name)
+        current_xp += xp_to_add
+        current_level = self.get_level(user_id, skill_name)
+        next_level_xp = math.ceil(100 * (1.1 ** current_level))
+
+        level_up = False
+
+        while current_xp >= next_level_xp:
+            logging.info("%s - Current xp - %s is higher than xp needed to level up - %s. Leveling up %s!", user_id, current_level, new_level, skill_name)
+            level_up = True
+            self.add_level(user_id, skill_name)
+            current_level += 1
+            current_xp = current_xp - next_level_xp
+            next_level_xp = math.ceil(100 * (1.1 ** current_level))
+
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "UPDATE levels SET %s_xp = %s WHERE user_id = %s"
+        self.execute_query(query, (level_name, current_xp, user_id))
+        self.db.commit()
+        logging.info(" Set current xp to %s for user id %s for skill %s", current_xp, user_id, skill_name)         
+
+        return level_up
+
+    def add_level(self, user_id: str, skill_name: str) -> None:
+        """ Levels up a skill. """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "SELECT %s_level FROM levels WHERE user_id = %s"
+        current_level = self.execute_query(query, (skill_name, user_id), fetchone=True)
+        new_level = current_level + 1
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "UPDATE levels SET %s_level = %s WHERE user_id = %s"
+        self.execute_query(query, (level_name, new_level, user_id))
+        self.db.commit()
+        logging.info("%s - Leveling up from %s to %s in skill %s", user_id, current_level, new_level, skill_name)
