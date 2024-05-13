@@ -36,5 +36,5 @@ A reminder system that allows users to set reminders within a discord server.
 ## Future updates
 
 - [ ] Improve logging.
-- [ ]Improve help commands.
+- [ ] Improve help commands.
 - [ ] Job update that adds jobs where users can level up in them to get more money or items.
