@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 DATABASE_NAME = "DiscordBotDB"
 logging.basicConfig(level=logging.INFO)
+ALLOWED_COLUMN_NAMES = ["fishing_xp", "fishing_level"]
 
 class DBController:
     """ Controls the python connection the MySQL database """
@@ -40,11 +41,12 @@ class DBController:
             print(f"Error executing query: {e}")
             return None
 
-    def store_message_info(self, author, content, timestamp) -> None:
+    def store_message_info(self, user_id, content, timestamp) -> None:
         """ Adds a users message info to the db """
         self.execute_query(f"USE {DATABASE_NAME}")
         query = "INSERT INTO messages (user_id, content, sent_time) VALUES (%s, %s, %s)"
-        value = (author, content, timestamp)
+        value = (user_id, content, timestamp)
+        logging.info("Adding the following message by %s: %s", user_id, content)
         self.execute_query(query, value)
         self.db.commit()
 
@@ -88,9 +90,9 @@ class DBController:
             query = "INSERT INTO levels (user_id) VALUES (%s)"
             self.execute_query(query, (user_id,))
             self.db.commit()
-            logging.info("User %s added to datbase successfully.", user_id)
+            logging.info("User levels row  for %s added to datbase successfully.", user_id)
         else:
-            logging.error("User %s already exists in the database.", user_id)
+            logging.error("User levels row for %s already exists in the database.", user_id)
 
     def add_gold(self, user_id: str, amount: int) -> None:
         """ Adds to the users current balance """
@@ -224,14 +226,38 @@ class DBController:
         Returns:
             int: level of the skill
         """
-        self.execute_query(f"USE {DATABASE_NAME}")
-        query = "SELECT %s_level FROM levels WHERE user_id = %s"
-        result = self.execute_query(query, (skill_name, user_id), fetchone=True)
-        if result:
-            return result[0]
-        # User levels not in db so lets add them and return a starting level of 1
-        self.add_user_levels(user_id)
-        return 1
+        column_name = skill_name + "_level"
+        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+            self.execute_query(f"USE {DATABASE_NAME}")
+            query = f"SELECT {column_name} FROM levels WHERE user_id = %s"
+            result = self.execute_query(query, (user_id,), fetchone=True)
+            print(result)
+            if result:
+                return result[0]
+            # User levels not in db so lets add them and return a starting level of 1
+            self.add_user_levels(user_id)
+            return 1
+        else:
+            raise ValueError("Column name not allowed for levels table")            
+
+    def update_level(self, user_id: str, skill_name: str, level: int) -> None:
+        """
+        Update the level of a skill in the db for a user
+
+        args:
+            user_id (str): Discord id of the user
+            skill_name (str): Name of the skill
+            xp (int): xp to set
+        """
+        column_name = skill_name + "_level"
+        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+            self.execute_query(f"USE {DATABASE_NAME}")
+            query = f"UPDATE levels SET {column_name} = %s WHERE user_id = %s"
+            self.execute_query(query, (level, user_id))
+            self.db.commit()
+            logging.info("%s - Leveling up to %s in skill %s", user_id, level, skill_name)
+        else:
+            raise ValueError("Column name not allowed for levels table")
 
     def get_xp(self, user_id: str, skill_name: str) -> int:
         """
@@ -244,57 +270,35 @@ class DBController:
         Returns:
             int: xp of the skill
         """
-        self.execute_query(f"USE {DATABASE_NAME}")
-        query = "SELECT %s_xp FROM levels WHERE user_id = %s"
-        result = self.execute_query(query, (skill_name, user_id), fetchone=True)
-        if result:
-            return result[0]
-        # User levels not in db so lets add them and return a starting xp of 0
-        self.add_user_levels(user_id)
-        return 0
+        column_name = skill_name + "_xp"
+        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+            self.execute_query(f"USE {DATABASE_NAME}")
+            query = f"SELECT {column_name} FROM levels WHERE user_id = %s"
+            result = self.execute_query(query, (user_id,), fetchone=True)
+            print(result)
+            if result:
+                return result[0]
+            # User levels not in db so lets add them and return a starting xp of 0
+            self.add_user_levels(user_id)
+            return 0
+        else:
+            raise ValueError("Column name not allowed for levels table")
 
-    def add_xp(self, xp_to_add: int, user_id: str, skill_name: str) -> bool:
+    def update_xp(self, user_id: str, skill_name: str, xp: int) -> None:
         """
-        Adds xp to a skill. If xp surpasses next_level_xp, level up.
+        Update the xp of a skill in the db for a user
 
         args:
             user_id (str): Discord id of the user
             skill_name (str): Name of the skill
-
-        Returns:
-            bool: returns True if user leveled up after adding xp, False if not.
+            xp (int): xp to set
         """
-        current_xp = self.get_xp(user_id, skill_name)
-        current_xp += xp_to_add
-        current_level = self.get_level(user_id, skill_name)
-        next_level_xp = math.ceil(100 * (1.1 ** current_level))
-
-        level_up = False
-
-        while current_xp >= next_level_xp:
-            logging.info("%s - Current xp - %s is higher than xp needed to level up - %s. Leveling up %s!", user_id, current_level, new_level, skill_name)
-            level_up = True
-            self.add_level(user_id, skill_name)
-            current_level += 1
-            current_xp = current_xp - next_level_xp
-            next_level_xp = math.ceil(100 * (1.1 ** current_level))
-
-        self.execute_query(f"USE {DATABASE_NAME}")
-        query = "UPDATE levels SET %s_xp = %s WHERE user_id = %s"
-        self.execute_query(query, (level_name, current_xp, user_id))
-        self.db.commit()
-        logging.info(" Set current xp to %s for user id %s for skill %s", current_xp, user_id, skill_name)         
-
-        return level_up
-
-    def add_level(self, user_id: str, skill_name: str) -> None:
-        """ Levels up a skill. """
-        self.execute_query(f"USE {DATABASE_NAME}")
-        query = "SELECT %s_level FROM levels WHERE user_id = %s"
-        current_level = self.execute_query(query, (skill_name, user_id), fetchone=True)
-        new_level = current_level + 1
-        self.execute_query(f"USE {DATABASE_NAME}")
-        query = "UPDATE levels SET %s_level = %s WHERE user_id = %s"
-        self.execute_query(query, (level_name, new_level, user_id))
-        self.db.commit()
-        logging.info("%s - Leveling up from %s to %s in skill %s", user_id, current_level, new_level, skill_name)
+        column_name = skill_name + "_xp"
+        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+            self.execute_query(f"USE {DATABASE_NAME}")
+            query = f"UPDATE levels SET {column_name} = %s WHERE user_id = %s"
+            self.execute_query(query, (xp, user_id))
+            self.db.commit()
+            logging.info("Set current xp to %s for user id %s for skill %s", xp, user_id, skill_name)
+        else:
+            raise ValueError("Column name not allowed for levels table")

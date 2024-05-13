@@ -11,10 +11,14 @@ class Economy(commands.Cog):
     @commands.command(name='balance', help='Check your current balance')
     async def balance(self, ctx):
         """ Check the user's current balance """
+        if ctx.author.nick:
+            name = ctx.author.nick
+        else:
+            name = ctx.author.display_name
         user_id = str(ctx.author.id)
         balance = self.bot.db_controller.get_user_balance(user_id)
         formatted_balance = f"{balance:,}" # Add commas
-        await ctx.send(f"Your balance is {formatted_balance} gold.")
+        await ctx.send(f"Hi {name}, your current balance is {formatted_balance} gold.")
 
     @commands.command(name='daily', help='Daily command to get gold')
     @commands.cooldown(1,86400,commands.BucketType.user)
@@ -103,7 +107,7 @@ class Economy(commands.Cog):
                 # Need to grab discord username from user_id.
                 # This step takes too long. TODO find another solution.
                 user = await self.bot.fetch_user(user_id)
-                username = user.name
+                username = user.display_name
                 formatted_row = f"{username}          {balance:,}"
                 formatted_rows.append(formatted_row)
 

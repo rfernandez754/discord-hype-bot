@@ -57,7 +57,7 @@ class FishingUtil:
 
         return adjusted_catch_chance
 
-    def catch_fish(self) -> [str, int, str, float, str]:
+    def catch_fish(self) -> [str, int, str, float, str, int]:
         """ 
         Simulate fishing
         
@@ -67,6 +67,7 @@ class FishingUtil:
             str: species of the caught fish
             float : size of the fish
             str: rarity of the caught fish
+            xp: fishing xp earned from catching the fish
         """
         chosen_fish = random.choices(
             self.fish_data['fish'],
@@ -77,12 +78,16 @@ class FishingUtil:
                               chosen_fish['size_range']['max_length']),2)
         base_gold, additional_gold = self.calculate_selling_price(chosen_fish, size)
         selling_price = base_gold + additional_gold
-        return [f"```You caught a {chosen_fish['name']} of size {size} cm! "
+        fish_species = chosen_fish['name']
+        fish_rarity = chosen_fish['rarity']
+        fish_xp = chosen_fish['xp']
+        return [f"you caught a {fish_species} of size {size} cm! "
+                f"You gain {fish_xp} fishing xp. "
                 f"It sells for {base_gold} gold. "
-                f"This is a {chosen_fish['rarity']} fish! "
                 f"You gain an additional {additional_gold} gold based on the size "
-                f"for a total of {selling_price} gold!```",
-                selling_price, chosen_fish['name'], size, chosen_fish['rarity']]
+                f"for a total of {selling_price} gold! "
+                f"This is a {fish_rarity} fish!```",
+                selling_price, fish_species, size, fish_rarity, fish_xp]
 
     def calculate_selling_price(self, fish, size) -> [int, float]:
         """ 

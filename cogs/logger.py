@@ -12,7 +12,7 @@ class Logging(commands.Cog):
         """ Stores command messages """
         # Stores only user messages that are considered commands
         if message.content[0] == self.bot.command_prefix:
-            self.bot.db_controller.store_message_info(message.author.name, \
+            self.bot.db_controller.store_message_info(str(message.author.id), \
                                                     message.content, \
                                                     message.created_at)
 

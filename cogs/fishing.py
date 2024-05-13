@@ -1,5 +1,6 @@
 """ Module contains a Cog for handling the economy. """
 import logging
+import math
 from discord.ext import commands
 from fishing_util import FishingUtil
 
@@ -15,11 +16,15 @@ class Fishing(commands.Cog):
         self.fishing = FishingUtil()
 
     @commands.command(name='fish', help='Attempt to catch and sell a fish')
-    @commands.cooldown(3,3600,commands.BucketType.user)
+    @commands.cooldown(3,1,commands.BucketType.user)
     async def fish(self, ctx):
         """ Attempt to catch a fish to sell for gold! """
+        if ctx.author.nick:
+            name = ctx.author.nick
+        else:
+            name = ctx.author.display_name
         user_id = str(ctx.author.id)
-        message, earnings, species, size, rarity = self.fishing.catch_fish()
+        message, earnings, species, size, rarity, earned_xp = self.fishing.catch_fish()
         logging.info("Fish caught by %s", user_id)
         self.bot.db_controller.add_gold(user_id, earnings)
         if rarity != "Joke" and \
@@ -28,7 +33,44 @@ class Fishing(commands.Cog):
                                                          size,
                                                          user_id):
             message += "```You have caught the biggest fish of this species! Type !biggest```"
+
+        skill_name = "fishing"
+        print("getting xp")
+        current_xp = self.bot.db_controller.get_xp(user_id, skill_name)
+        current_xp += earned_xp
+        print("getting level")
+        current_level = self.bot.db_controller.get_level(user_id, skill_name)
+        next_level_xp = math.ceil(100 * (1.1 ** (current_level - 1)))
+
+        leveled_up = False
+
+        while current_xp >= next_level_xp:
+            logging.info("User %s has a current xp - %s thst is higher than xp needed to level up - %s. Leveling up %s!", user_id, current_xp, next_level_xp, skill_name)
+            leveled_up = True
+            current_level += 1
+            self.bot.db_controller.update_level(user_id, skill_name, current_level)
+            current_xp = current_xp - next_level_xp
+            next_level_xp = math.ceil(100 * (1.1 ** (current_level - 1)))
+
+        self.bot.db_controller.update_xp(user_id, skill_name, current_xp)    
+        if leveled_up:
+            message += f"```Congrats! Your fishing level has leveled up to level {current_level} !```"
+
+        message = f"```Hi {name}, " + message # Prepend a greeting to message before sending
         await ctx.send(message)
+
+    @commands.command(name='level', help='Displays yout current fishing level and xp')
+    async def level(self, ctx):
+        """ Attempt to catch a fish to sell for gold! """
+        if ctx.author.nick:
+            name = ctx.author.nick
+        else:
+            name = ctx.author.display_name
+        user_id = str(ctx.author.id)
+        level = self.bot.db_controller.get_level(user_id,"fishing")
+        current_xp = self.bot.db_controller.get_xp(user_id,"fishing")
+        xp_to_level = math.ceil(100 * (1.1 ** (level - 1))) - current_xp
+        await ctx.send(f"Hi {name}, you are fishing level {level}. You have {current_xp} xp and need {xp_to_level} xp to level up.")
 
     @commands.command(name='biggest', help='Shows the leaderboard of biggest fish caught')
     async def biggest(self, ctx):
