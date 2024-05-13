@@ -35,7 +35,7 @@ class FishingUtil:
 
         # Adjust catch chance based on fishing and rod levels. Level 1 means no bonus.
         fishing_boost = 1 * (self.fishing_lvl - 1)
-        rod_boost = 2 * (self.rod_lvl - 1)
+        rod_boost = 3 * (self.rod_lvl - 1)
 
         # Define scaling factors based on rarity
         rarity_scale = {
@@ -43,17 +43,20 @@ class FishingUtil:
             'Common': 0,
             'Uncommon': 0,
             'Rare': 0.09,
-            'Very Rare': 0.11,
-            'Legendary': 0.13,
-            'Mythic': 0.15,
-            'Godly': 0.17
+            'Very Rare': 0.15,
+            'Legendary': 0.17,
+            'Mythic': 0.19,
+            'Godly': 0.21
         }
+
+        # Additional multiplier for every 5 fishing levels
+        extra_multiplier = (self.fishing_lvl // 5) + 1
 
         # Get the scaling factor based on rarity (default to 0 for unknown rarity)
         scale_factor = rarity_scale.get(rarity, 0)
 
         # Calculate adjusted catch chance with scaled boosts
-        adjusted_catch_chance = base_catch_chance + (base_catch_chance * scale_factor * fishing_boost) + (base_catch_chance * scale_factor * rod_boost)
+        adjusted_catch_chance = base_catch_chance + (base_catch_chance * scale_factor * fishing_boost * extra_multiplier) + (base_catch_chance * scale_factor * rod_boost * extra_multiplier)
 
         return adjusted_catch_chance
 

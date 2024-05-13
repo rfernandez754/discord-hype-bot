@@ -18,7 +18,7 @@ class Economy(commands.Cog):
         user_id = str(ctx.author.id)
         balance = self.bot.db_controller.get_user_balance(user_id)
         formatted_balance = f"{balance:,}" # Add commas
-        await ctx.send(f"Hi {name}, your current balance is {formatted_balance} gold.")
+        await ctx.send(f"```Hi {name}, your current balance is {formatted_balance} gold.```")
 
     @commands.command(name='daily', help='Daily command to get gold')
     @commands.cooldown(1,86400,commands.BucketType.user)
@@ -27,7 +27,7 @@ class Economy(commands.Cog):
         amount = 100
         user_id = str(ctx.author.id)
         self.bot.db_controller.add_gold(user_id, amount)
-        await ctx.send(f"You gained {amount} gold!")
+        await ctx.send(f"```You gained {amount} gold!```")
 
     @commands.command(name='mystery', help='Does something mysterious')
     @commands.cooldown(1,86400,commands.BucketType.user)

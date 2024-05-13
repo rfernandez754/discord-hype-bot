@@ -11,14 +11,14 @@ Economy game for a discord server that has user accumulate gold.
     - [x] balance - Check users balance
     - [x] lb - Check gold leadboards
     - [x] mystery - Mystery Command that does something random
-- [ ] Fishing Commands
+- [x] Fishing Commands
     - [x] fish - catch a random fish
     - [x] biggest - check leadboard of the biggest caught fish
     - [x] fishlvl - get fishing level and xp
-    - [ ] rodlvl - get rods level and name of rod upgrade (i.e., lvl 1 - bronze rod, lvl 3 - gold rod, etc)
-- [ ] Fishing System
+    - [x] rodlvl - get rods level and name of rod upgrade (i.e., lvl 1 - bronze rod, lvl 3 - gold rod, etc)
+- [x] Fishing System
     - [x] Add fishing levels and xp gain from fish
-    - [ ] Add fishing rod upgrade
+    - [x] Add fishing rod upgrade
 - [ ] Lottery commands to risk some money for a lot of money. Should be worth it to use in long run. Maybe an hourly, daily, and weekly. RemindMe 30m Message.
     - [ ] Add a dice roller for this to be more interactive
 

@@ -49,7 +49,7 @@
         "rarity": "Common",
         "catch_chance": 0.6,
         "gold": 5,
-        "xp": 5,
+        "xp": 25,
         "size_range": {
           "min_length": 50,
           "max_length": 120
@@ -60,7 +60,7 @@
         "rarity": "Common",
         "catch_chance": 0.5,
         "gold": 10,
-        "xp": 6,
+        "xp": 27,
         "size_range": {
           "min_length": 20,
           "max_length": 40
@@ -71,7 +71,7 @@
         "rarity": "Common",
         "catch_chance": 0.4,
         "gold": 8,
-        "xp": 7,
+        "xp": 30,
         "size_range": {
           "min_length": 10,
           "max_length": 25
@@ -82,7 +82,7 @@
         "rarity": "Uncommon",
         "catch_chance": 0.25,
         "gold": 50,
-        "xp": 15,
+        "xp": 45,
         "size_range": {
           "min_length": 30,
           "max_length": 70
@@ -93,7 +93,7 @@
         "rarity": "Uncommon",
         "catch_chance": 0.2,
         "gold": 45,
-        "xp": 17,
+        "xp": 50,
         "size_range": {
           "min_length": 50,
           "max_length": 150
@@ -104,7 +104,7 @@
         "rarity": "Uncommon",
         "catch_chance": 0.15,
         "gold": 40,
-        "xp": 20,
+        "xp": 55,
         "size_range": {
           "min_length": 30,
           "max_length": 70
@@ -115,7 +115,7 @@
         "rarity": "Rare",
         "catch_chance": 0.1,
         "gold": 150,
-        "xp": 35,
+        "xp": 60,
         "size_range": {
           "min_length": 100,
           "max_length": 200
@@ -126,7 +126,7 @@
         "rarity": "Rare",
         "catch_chance": 0.08,
         "gold": 190,
-        "xp": 40,
+        "xp": 65,
         "size_range": {
           "min_length": 70,
           "max_length": 120
@@ -137,7 +137,7 @@
         "rarity": "Rare",
         "catch_chance": 0.05,
         "gold": 180,
-        "xp": 45,
+        "xp": 75,
         "size_range": {
           "min_length": 150,
           "max_length": 300
@@ -148,7 +148,7 @@
         "rarity": "Very Rare",
         "catch_chance": 0.02,
         "gold": 350,
-        "xp": 60,
+        "xp": 95,
         "size_range": {
           "min_length": 50,
           "max_length": 110
@@ -159,7 +159,7 @@
         "rarity": "Very Rare",
         "catch_chance": 0.03,
         "gold": 300,
-        "xp": 72,
+        "xp": 105,
         "size_range": {
           "min_length": 100,
           "max_length": 180
@@ -170,7 +170,7 @@
         "rarity": "Legendary",
         "catch_chance": 0.005,
         "gold": 2000,
-        "xp": 135,
+        "xp": 155,
         "size_range": {
           "min_length": 360,
           "max_length": 550
@@ -181,7 +181,7 @@
         "rarity": "Legendary",
         "catch_chance": 0.006,
         "gold": 1800,
-        "xp": 130,
+        "xp": 160,
         "size_range": {
           "min_length": 200,
           "max_length": 500
@@ -192,7 +192,7 @@
         "rarity": "Mythic",
         "catch_chance": 0.0005,
         "gold": 30000,
-        "xp": 475,
+        "xp": 575,
         "size_range": {
           "min_length": 900,
           "max_length": 1100
@@ -203,7 +203,7 @@
         "rarity": "Mythic",
         "catch_chance": 0.001,
         "gold": 25000,
-        "xp": 675,
+        "xp": 875,
         "size_range": {
           "min_length": 300,
           "max_length": 800
@@ -214,7 +214,7 @@
         "rarity": "Mythic",
         "catch_chance": 0.0001,
         "gold": 70000,
-        "xp": 1250,
+        "xp": 1450,
         "size_range": {
           "min_length": 600,
           "max_length": 1200
@@ -225,7 +225,7 @@
         "rarity": "Godly",
         "catch_chance": 0.00001,
         "gold": 1800000,
-        "xp": 4095,
+        "xp": 6095,
         "size_range": {
           "min_length": 2000,
           "max_length": 3000

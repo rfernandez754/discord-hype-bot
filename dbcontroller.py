@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 DATABASE_NAME = "DiscordBotDB"
 logging.basicConfig(level=logging.INFO)
-ALLOWED_COLUMN_NAMES = ["fishing_xp", "fishing_level"]
+ALLOWED_LEVELS_COLUMN_NAMES = ["fishing_level", "rod_level", "fishing_xp"]
 
 class DBController:
     """ Controls the python connection the MySQL database """
@@ -227,7 +227,7 @@ class DBController:
             int: level of the skill
         """
         column_name = skill_name + "_level"
-        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+        if column_name in ALLOWED_LEVELS_COLUMN_NAMES: # safety measure to prevent sql injection
             self.execute_query(f"USE {DATABASE_NAME}")
             query = f"SELECT {column_name} FROM levels WHERE user_id = %s"
             result = self.execute_query(query, (user_id,), fetchone=True)
@@ -250,7 +250,7 @@ class DBController:
             xp (int): xp to set
         """
         column_name = skill_name + "_level"
-        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+        if column_name in ALLOWED_LEVELS_COLUMN_NAMES: # safety measure to prevent sql injection
             self.execute_query(f"USE {DATABASE_NAME}")
             query = f"UPDATE levels SET {column_name} = %s WHERE user_id = %s"
             self.execute_query(query, (level, user_id))
@@ -271,7 +271,7 @@ class DBController:
             int: xp of the skill
         """
         column_name = skill_name + "_xp"
-        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+        if column_name in ALLOWED_LEVELS_COLUMN_NAMES: # safety measure to prevent sql injection
             self.execute_query(f"USE {DATABASE_NAME}")
             query = f"SELECT {column_name} FROM levels WHERE user_id = %s"
             result = self.execute_query(query, (user_id,), fetchone=True)
@@ -294,7 +294,7 @@ class DBController:
             xp (int): xp to set
         """
         column_name = skill_name + "_xp"
-        if column_name in ALLOWED_COLUMN_NAMES: # safety measure to prevent sql injection
+        if column_name in ALLOWED_LEVELS_COLUMN_NAMES: # safety measure to prevent sql injection
             self.execute_query(f"USE {DATABASE_NAME}")
             query = f"UPDATE levels SET {column_name} = %s WHERE user_id = %s"
             self.execute_query(query, (xp, user_id))

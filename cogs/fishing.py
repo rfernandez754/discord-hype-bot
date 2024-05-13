@@ -1,12 +1,38 @@
 """ Module contains a Cog for handling the economy. """
 import logging
 import math
+import asyncio
 from discord.ext import commands
 from fishing_util import FishingUtil
 
 # Used for ordering in Fishing Leaderboards
 RARITY_MAP = { "Common" : 0, "Uncommon" : 1, "Rare" : 2, "Very Rare" : 3,
                "Legendary" : 4, "Mythic" : 5, "Godly" : 6 }
+
+ROD_TYPE_MAP = {
+    1: "Shoddy Wooden Rod",
+    2: "Oak Wood Rod",
+    3: "Basic Iron Rod",
+    4: "Reinforced Steel Rod",
+    5: "Adamantine Rod",
+    6: "Advanced Carbon Fiber Rod",
+    7: "Legendary Admiral Rod",
+    8: "Magical Crystal Rod",
+    9: "Ancient Dragon Rod",
+    10: "Titanium Alloy Rod",
+    11: "Celestial Gold Rod",
+    12: "Ethereal Diamond Rod",
+    13: "Void Essence Rod",
+    14: "Dimensional Rift Rod",
+    15: "Cosmic Nexus Rod",
+    16: "Timeless Chrono Rod",
+    17: "Infinite Omegon Rod",
+    18: "4 Dimensional God Rod",
+    19: "5 Dimensional Infinity Rod",
+    20: "Infinite Dimensional Rod",
+    21: "Multiversal Rod",
+}
+
 
 class Fishing(commands.Cog):
     """ These are the commands for the fishing minigame. Catch and sell fish. Compete for the size leaderboards. Level up! """
@@ -26,7 +52,8 @@ class Fishing(commands.Cog):
 
         skill_name = "fishing"
         current_fishing_lvl = self.bot.db_controller.get_level(user_id, skill_name)
-        fishing = FishingUtil(current_fishing_lvl)
+        current_rod_lvl = self.bot.db_controller.get_level(user_id, "rod")
+        fishing = FishingUtil(current_fishing_lvl, current_rod_lvl)
         message, earnings, species, size, rarity, earned_xp = fishing.catch_fish()
         logging.info("Fish caught by %s", user_id)
         self.bot.db_controller.add_gold(user_id, earnings)
@@ -58,18 +85,66 @@ class Fishing(commands.Cog):
         message = f"```Nice {name}, " + message # Prepend a greeting to message before sending
         await ctx.send(message)
 
-    @commands.command(name='level', help='Displays yout current fishing level and xp')
+    @commands.command(name='level', help='Displays your current fishing level and xp')
     async def level(self, ctx):
-        """ Attempt to catch a fish to sell for gold! """
+        """ Displays your current fishing level and xp. """
         if ctx.author.nick:
             name = ctx.author.nick
         else:
             name = ctx.author.display_name
         user_id = str(ctx.author.id)
-        level = self.bot.db_controller.get_level(user_id,"fishing")
-        current_xp = self.bot.db_controller.get_xp(user_id,"fishing")
+        level = self.bot.db_controller.get_level(user_id, "fishing")
+        current_xp = self.bot.db_controller.get_xp(user_id, "fishing")
         xp_to_level = math.ceil(100 * (1.1 ** (level - 1))) - current_xp
         await ctx.send(f"Hi {name}, you are fishing level {level}. You have {current_xp} xp and need {xp_to_level} more xp to level up.")
+
+    @commands.command(name='rod', help='Displays your current rod level and name')
+    async def rod(self, ctx):
+        """ Displays your current rod level and name. """
+        if ctx.author.nick:
+            name = ctx.author.nick
+        else:
+            name = ctx.author.display_name
+        user_id = str(ctx.author.id)
+        rod_level = self.bot.db_controller.get_level(user_id, "rod")
+        await ctx.send(f"```Hi {name}, you have a {ROD_TYPE_MAP[rod_level]}. This rod's level is {rod_level}.```")
+
+    @commands.command(name='upgrade', help='Attemps to upgrade your fishing rod')
+    async def upgrade(self, ctx):
+        """ Attemps to upgrade your fishing rod. """
+        def check(message): # Make sure it is the same user replying in the same channel to bot question
+            return message.author == ctx.author and message.channel == ctx.channel
+
+        if ctx.author.nick:
+            name = ctx.author.nick
+        else:
+            name = ctx.author.display_name
+        user_id = str(ctx.author.id)
+        rod_level = self.bot.db_controller.get_level(user_id, "rod")
+        if rod_level + 1 not in ROD_TYPE_MAP:
+            await ctx.send("```You have already reached the max level fishing rod!```")
+            return
+        gold_required = (2 ** (rod_level-1)) * 100
+        balance = self.bot.db_controller.get_user_balance(user_id)
+        formatted_balance = f"{balance:,}" # Add commas
+        formatted_gold_required = f"{gold_required:,}" # Add commas
+
+        if balance < gold_required:
+            await ctx.send(f"```Hi {name}, you have {formatted_balance} gold but need {formatted_gold_required} to upgrade your rod to a {ROD_TYPE_MAP[rod_level+1]}.```")
+        else:
+            await ctx.send(f"```Hi {name}, you have {formatted_balance} gold. Would you like to upgrade your rod to a {ROD_TYPE_MAP[rod_level+1]} for {formatted_gold_required} gold?```")
+
+            try:
+                message = await self.bot.wait_for('message', timeout=30.0, check=check)  # Wait for user response
+                if "yes" in message.content.lower() or message.content.lower() == "y":
+                    rod_level += 1
+                    self.bot.db_controller.update_level(user_id, "rod", rod_level)
+                    self.bot.db_controller.subtract_gold(user_id, gold_required)
+                    await ctx.send(f"```Congrats! You have upgraded your fishing rod to a {ROD_TYPE_MAP[rod_level]}.```")
+                else:
+                    await ctx.send(f"```You don't want it... thats fine !```")
+            except asyncio.TimeoutError:
+                await ctx.send("```You took too long to respond.```")
 
     @commands.command(name='biggest', help='Shows the leaderboard of biggest fish caught')
     async def biggest(self, ctx):
