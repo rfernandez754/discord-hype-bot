@@ -13,7 +13,6 @@ class Fishing(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.fishing = FishingUtil()
 
     @commands.command(name='fish', help='Attempt to catch and sell a fish')
     @commands.cooldown(3,1,commands.BucketType.user)
@@ -24,7 +23,11 @@ class Fishing(commands.Cog):
         else:
             name = ctx.author.display_name
         user_id = str(ctx.author.id)
-        message, earnings, species, size, rarity, earned_xp = self.fishing.catch_fish()
+
+        skill_name = "fishing"
+        current_fishing_lvl = self.bot.db_controller.get_level(user_id, skill_name)
+        fishing = FishingUtil(current_fishing_lvl)
+        message, earnings, species, size, rarity, earned_xp = fishing.catch_fish()
         logging.info("Fish caught by %s", user_id)
         self.bot.db_controller.add_gold(user_id, earnings)
         if rarity != "Joke" and \
@@ -32,31 +35,27 @@ class Fishing(commands.Cog):
                                                          RARITY_MAP[rarity],
                                                          size,
                                                          user_id):
-            message += "```You have caught the biggest fish of this species! Type !biggest```"
+            message += "```You have caught the biggest fish of this species! Type !biggest```\n"
 
-        skill_name = "fishing"
-        print("getting xp")
         current_xp = self.bot.db_controller.get_xp(user_id, skill_name)
         current_xp += earned_xp
-        print("getting level")
-        current_level = self.bot.db_controller.get_level(user_id, skill_name)
-        next_level_xp = math.ceil(100 * (1.1 ** (current_level - 1)))
+        next_level_xp = math.ceil(100 * (1.1 ** (current_fishing_lvl - 1)))
 
         leveled_up = False
 
         while current_xp >= next_level_xp:
             logging.info("User %s has a current xp - %s thst is higher than xp needed to level up - %s. Leveling up %s!", user_id, current_xp, next_level_xp, skill_name)
             leveled_up = True
-            current_level += 1
-            self.bot.db_controller.update_level(user_id, skill_name, current_level)
+            current_fishing_lvl += 1
+            self.bot.db_controller.update_level(user_id, skill_name, current_fishing_lvl)
             current_xp = current_xp - next_level_xp
-            next_level_xp = math.ceil(100 * (1.1 ** (current_level - 1)))
+            next_level_xp = math.ceil(100 * (1.1 ** (current_fishing_lvl - 1)))
 
         self.bot.db_controller.update_xp(user_id, skill_name, current_xp)    
         if leveled_up:
-            message += f"```Congrats! Your fishing level has leveled up to level {current_level} !```"
+            message += f"```Congrats! Your fishing level has leveled up to level {current_fishing_lvl} !```"
 
-        message = f"```Hi {name}, " + message # Prepend a greeting to message before sending
+        message = f"```Nice {name}, " + message # Prepend a greeting to message before sending
         await ctx.send(message)
 
     @commands.command(name='level', help='Displays yout current fishing level and xp')
@@ -70,7 +69,7 @@ class Fishing(commands.Cog):
         level = self.bot.db_controller.get_level(user_id,"fishing")
         current_xp = self.bot.db_controller.get_xp(user_id,"fishing")
         xp_to_level = math.ceil(100 * (1.1 ** (level - 1))) - current_xp
-        await ctx.send(f"Hi {name}, you are fishing level {level}. You have {current_xp} xp and need {xp_to_level} xp to level up.")
+        await ctx.send(f"Hi {name}, you are fishing level {level}. You have {current_xp} xp and need {xp_to_level} more xp to level up.")
 
     @commands.command(name='biggest', help='Shows the leaderboard of biggest fish caught')
     async def biggest(self, ctx):
@@ -88,7 +87,7 @@ class Fishing(commands.Cog):
                 # Need to grab discord username from user_id.
                 # This step takes too long. TODO find another solution.
                 user = await self.bot.fetch_user(user_id)
-                username = user.name
+                username = user.display_name
                 formatted_row = f"{fish_name:<20} {size:<10}     {username}"
                 formatted_rows.append(formatted_row)
 

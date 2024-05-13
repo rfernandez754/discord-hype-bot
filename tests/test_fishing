@@ -24,7 +24,7 @@ def test_rarity(fishing_level, rod_level):
 
     # Simulate fishing RARITY_ATTEMPTS times and record species names and rarities
     for _ in range(RARITY_ATTEMPTS):
-        _, _, species, _, rarity = fishing.catch_fish()
+        _, _, species, _, rarity, _ = fishing.catch_fish()
         if species in species_map:
             species_map[species]['count'] += 1
         else:
@@ -51,7 +51,7 @@ def test_rarity(fishing_level, rod_level):
 def main() -> None:
     """ main method """
     test_rarity(1,1)
-    test_rarity(3,2)
+    test_rarity(5,2)
 
 if __name__ == '__main__':
     main()

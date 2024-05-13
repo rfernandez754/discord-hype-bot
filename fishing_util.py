@@ -34,26 +34,26 @@ class FishingUtil:
         rarity = fish['rarity']
 
         # Adjust catch chance based on fishing and rod levels. Level 1 means no bonus.
-        fishing_boost = 0.015 * (self.fishing_lvl - 1)
-        rod_boost = 0.025 * (self.rod_lvl - 1)
+        fishing_boost = 1 * (self.fishing_lvl - 1)
+        rod_boost = 2 * (self.rod_lvl - 1)
 
         # Define scaling factors based on rarity
         rarity_scale = {
             'Joke' : 0,
-            'Common': 0.01,
-            'Uncommon': 0.012,
-            'Rare': 0.015,
-            'Very Rare': 0.017,
-            'Legendary': 0.019,
-            'Mythic': 0.021,
-            'Godly': 0.022
+            'Common': 0,
+            'Uncommon': 0,
+            'Rare': 0.09,
+            'Very Rare': 0.11,
+            'Legendary': 0.13,
+            'Mythic': 0.15,
+            'Godly': 0.17
         }
 
         # Get the scaling factor based on rarity (default to 0 for unknown rarity)
         scale_factor = rarity_scale.get(rarity, 0)
 
-        # Calculate adjusted catch chance with scaled boosts (linear component)
-        adjusted_catch_chance = base_catch_chance + scale_factor * (fishing_boost + rod_boost)
+        # Calculate adjusted catch chance with scaled boosts
+        adjusted_catch_chance = base_catch_chance + (base_catch_chance * scale_factor * fishing_boost) + (base_catch_chance * scale_factor * rod_boost)
 
         return adjusted_catch_chance
 
@@ -81,12 +81,12 @@ class FishingUtil:
         fish_species = chosen_fish['name']
         fish_rarity = chosen_fish['rarity']
         fish_xp = chosen_fish['xp']
-        return [f"you caught a {fish_species} of size {size} cm! "
-                f"You gain {fish_xp} fishing xp. "
-                f"It sells for {base_gold} gold. "
-                f"You gain an additional {additional_gold} gold based on the size "
-                f"for a total of {selling_price} gold! "
-                f"This is a {fish_rarity} fish!```",
+        return [f"you caught a {fish_species}!\n"
+                f"Rarity: {fish_rarity}\n"
+                f"Size: {size} cm\n"
+                f"XP Gained: {fish_xp} xp\n"
+                f"Base worth: {base_gold} gold\n"
+                f"Size bonus: {additional_gold} gold```\n",
                 selling_price, fish_species, size, fish_rarity, fish_xp]
 
     def calculate_selling_price(self, fish, size) -> [int, float]:
