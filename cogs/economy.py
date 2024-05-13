@@ -92,6 +92,29 @@ class Economy(commands.Cog):
         else:
             await ctx.send("Nothing Happens!")
 
+
+
+    @commands.command(name='steal', help='Steal from somebody at random')
+    @commands.cooldown(1,3600,commands.BucketType.user)
+    async def steal(self, ctx, arg):
+        """ Steal from somebody """
+        if self.bot.db_controller.count_users() >= 2:
+            random_user = self.bot.db_controller.get_random_user()
+            random_percentage = random.randint(1,25) # Will steal from 1% to 25% of gold from somebody
+            amount = self.bot.db_controller.get_user_balance(random_user)
+            amount = int(0.01 * random_percentage * amount)
+            stolen_amount = self.bot.db_controller.steal_gold(str(ctx.author.id), random_user, amount)
+            stealer = await self.bot.fetch_user(str(ctx.author.id))
+            stealer_name = stealer.name
+            victim = await self.bot.fetch_user(random_user)
+            victim_name = victim.name
+            if stolen_amount:
+                await ctx.send(f"```Oh no! {stealer_name} just stole {stolen_amount} from {victim_name}! No ones doing anything to help? Classic bystander effect...```")
+            else:
+                await ctx.send(f"```{stealer_name} attempts to steal from {victim_name} but turns out they are completely broke.```")
+        else:
+            await ctx.send("```You are going to steal gold but theres nobody you find to steal from.```")
+
     @commands.command(name='lb', help='Shows the gold leaderboard')
     async def lb(self, ctx):
         """ Fetches the gold data of every user to display on a leaderboard """
