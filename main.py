@@ -31,7 +31,7 @@ class DiscordBot(commands.Bot):
     def __init__(self):
         intents = Intents.default()
         intents.message_content = True
-        help_command = commands.DefaultHelpCommand(no_category = 'Help Cmds') # Remove the "No Category" in !help
+        help_command = commands.DefaultHelpCommand(show_parameter_descriptions=False, no_category = 'Help Cmds') # Remove the "No Category" in !help
         super().__init__(command_prefix='!', intents=intents, help_command=help_command) # help_command=MyHelpCommand())
         self.db_controller = DBController()
 

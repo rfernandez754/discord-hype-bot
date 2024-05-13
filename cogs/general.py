@@ -2,7 +2,7 @@
 from discord.ext import commands
 
 class General(commands.Cog):
-    """ This cog handles general user commands and error watching. """
+    """ General commands and error watching. """
 
     def __init__(self, bot):
         self.bot = bot
@@ -32,11 +32,6 @@ class General(commands.Cog):
             await ctx.send(f"This command is on cooldown, you can use it in {cooldown_message}")
         else:
             print(error)
-
-    @commands.command()
-    async def hello(self, ctx, *, arg):
-        """ Test command to get bot response. Make sure to give args """
-        await ctx.send(f"Hey there, I got your command with args: {arg}")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

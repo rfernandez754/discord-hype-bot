@@ -9,7 +9,7 @@ RARITY_MAP = { "Common" : 0, "Uncommon" : 1, "Rare" : 2, "Very Rare" : 3,
                "Legendary" : 4, "Mythic" : 5, "Godly" : 6 }
 
 class Fishing(commands.Cog):
-    """ This cog handles fishing commands. """
+    """ These are the commands for the fishing minigame. Catch and sell fish. Compete for the size leaderboards. Level up! """
 
     def __init__(self, bot):
         self.bot = bot

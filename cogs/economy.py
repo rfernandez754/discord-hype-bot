@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 
 class Economy(commands.Cog):
-    """ This cog handles general economy commands. """
+    """ These are the commands for the Economy minigame on this discord server. Compete to amass the most wealth on the server! """
 
     def __init__(self, bot):
         self.bot = bot
