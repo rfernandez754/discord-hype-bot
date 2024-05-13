@@ -16,7 +16,7 @@ Economy game for a discord server that has user accumulate gold.
     - [x] fish - catch a random fish
     - [x] biggest - check leadboard of the biggest caught fish
     - [x] fishlvl - get fishing level and xp
-    - [x] rodlvl - get rods level and name of rod upgrade (i.e., lvl 1 - bronze rod, lvl 3 - gold rod, etc)
+    - [x] rodlvl - get rods level and name of the rod upgrade
 - [x] Fishing System
     - [x] Add fishing levels and xp gain from fish
     - [x] Add fishing rod upgrade
@@ -35,6 +35,6 @@ A reminder system that allows users to set reminders within a discord server.
 
 ## Future updates
 
-Improve logging.
-Imporve help commands.
-Job update that adds jobs where users can level up in them to get more money or items.
+- [ ] Improve logging.
+- [ ]Improve help commands.
+- [ ] Job update that adds jobs where users can level up in them to get more money or items.
