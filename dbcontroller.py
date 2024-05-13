@@ -302,3 +302,56 @@ class DBController:
             logging.info("Set current xp to %s for user id %s for skill %s", xp, user_id, skill_name)
         else:
             raise ValueError("Column name not allowed for levels table")
+
+    def add_reminder(self, user_id: str, content: str, timestamp: str) -> None:
+        """ Adds a reminder to the db """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "INSERT INTO reminders (user_id, reminder_text, reminder_time) VALUES (%s, %s, %s)"
+        value = (user_id, content, timestamp)
+        logging.info("Adding the following reminder by %s: %s at this time: %s", user_id, content, timestamp)
+        self.execute_query(query, value)
+        self.db.commit()
+
+    def get_reminder(self, id: int) -> (str , str):
+        """
+        Gets the reminder with the reminder id.
+
+        args:
+            id (int): id of the reminder. get_reminders can give a list of the ids.
+
+        Returns:
+            str: reminder text
+            str: reminder date time
+        """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = f"SELECT reminder_text, reminder_time FROM reminders WHERE id = %s"
+        result = self.execute_query(query, (id,), fetchone=True)
+        print(result)
+        if result:
+            return (result[0], result[1])
+        return None
+
+    def delete_reminder(self, id: int) -> None:
+        """ Deletes a reminder from the db based on user ID and content """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = "DELETE FROM reminders WHERE id = %s"
+        self.execute_query(query, (id,))
+        self.db.commit()
+        logging.info("Deleted reminder with id %s", id)
+
+    def get_reminder_list(self, id: int) -> (str , str):
+        """
+        Gets the reminder with the reminder id.
+
+        args:
+            id (int): id of the reminder. get_reminders can give a list of the ids.
+
+        Returns:
+            str: reminder text
+            str: reminder date time
+        """
+        self.execute_query(f"USE {DATABASE_NAME}")
+        query = f"SELECT reminder_text, reminder_time FROM reminders"
+        result = self.execute_query(query)
+        print(result)
+        return result
